@@ -25,7 +25,8 @@ sobelY = sobelX';
       
 Gx = conv2(sobelX, double(gray));
 Gy = conv2(sobelY, double(gray));
-G = sqrt(Gx.^2 + Gy.^2);
+%G = sqrt(Gx.^2 + Gy.^2);
+G = abs(Gx) + abs(Gy);
 
 %{
 noEdgeGrayValue = 0.569;
