@@ -22,5 +22,6 @@ filterBuilder = NET.createGeneric('MongoDB.Driver.FilterDefinitionBuilder', {'Mo
 
 %fieldDefinitionType = NET.GenericClass('MongoDB.Driver.FieldDefinition', 'MongoDB.Bson.BsonDocument', 'System.String');
 fieldDefinition = NET.createGeneric('MongoDB.Driver.StringFieldDefinition', {'MongoDB.Bson.BsonDocument'}, 'test');
-filterDefinition = NET.createGeneric('MongoDB.Driver.SimpleFilterDefinition', {'MongoDB.Bson.BsonDocument', 'MongoDB.Bson.BsonValue'}, fieldDefinition, 'lol');
+value = MongoDB.Bson.BsonString('lol');
+filterDefinition = NET.createGeneric('MongoDB.Driver.SimpleFilterDefinition', {'MongoDB.Bson.BsonDocument', 'MongoDB.Bson.BsonValue'}, fieldDefinition, value);
 %NET.invokeGenericMethod(filterBuilder, 'Eq', {fieldDefinitionType, 'System.String'}, fieldDefinition, 'lol');
