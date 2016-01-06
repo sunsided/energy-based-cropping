@@ -46,3 +46,13 @@ hybrid = 0.5 * (gleam + luster);
 figure, imshow(hybrid);
 title('Hybrid');
 imwrite(hybrid, 'hybrid.jpg');
+
+Y = 0.2126*R + 0.7152*G + 0.0722*B;
+
+Y(Y >  (6/29)^3) = Y(Y >  (6/29)^3).^(1/3);
+Y(Y <= (6/29)^3) = Y(Y <= (6/29)^3) * (1/3)*(29/6)^2 + (4/29);
+
+lightness = (1/100) * (116 * Y - 16);
+figure, imshow(lightness);
+title('Lightness');
+imwrite(lightness, 'lightness.jpg');
