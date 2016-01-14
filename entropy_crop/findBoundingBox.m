@@ -4,8 +4,8 @@ function [ box ] = findBoundingBox( I, threshold, level, offset )
     [M, N] = size(I);
     top  = 1 + offset;    
     left = 1 + offset;
-    right = M - offset;
-    bottom = N - offset;
+    right = N - offset;
+    bottom = M - offset;
     
     % find top-most row
     y_top = NaN;

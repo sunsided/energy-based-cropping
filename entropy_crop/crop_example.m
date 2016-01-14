@@ -2,6 +2,8 @@ close all;
 
 N = 256;                    % border length
 I = ones(N, N);             % white background
+I = cumsum(ones(N)/N, 2);
+%I = toeplitz(1:N)/N;
 I(32:224, 32:224) = 0.9375; % light gray box
 I(64:192, 32:224) = 0.875;  % light gray box
 I(64:192, 32:224) = 0.875;  % light gray box
@@ -10,21 +12,44 @@ I(96:160, 64:192) = 0.5;    % light gray box
 I(96:160, 96:160) = 0;      % black box
 
 E = 0.05*randn(N);          % zero-mean noise with s=0.05
-J = abs(I + E);             % apply the noise to the image
-J(J>1) = 1;
-J(J<0) = 0;
+Ie = abs(I + E);            % apply the noise to the image
+Ie(Ie>1) = 1;
+Ie(Ie<0) = 0;
 
-t = 0.13;                   % threshold value
-v = I(1,1);                 % candidate value
+Gx = conv2(Ie, 0.125*[-1 0 1; -2 0 2; -1 0 1]);
+Gy = conv2(Ie, 0.125*[-1 -2 -1; 0 0 0; 1 2 1]);
+J = abs(Gx) + abs(Gy);
+J = J(1+2:N, 1+2:N);
 
-box = findBoundingBox(J, t, v, 0)
+tI = 0.2;                   % threshold value
+vI = Ie(1,1);               % candidate value
+boxI = findBoundingBox(Ie, tI, vI, 0)
+
+J = (J-min(min(J)))/(max(max(J))-min(min(J)));
+tJ = 0.2;                   % threshold value
+vJ = 0;                     % candidate value
+boxJ = findBoundingBox(J, tJ, vJ, 0)
 
 %figure, hist(reshape(I,1,[]), 64)
 %figure, hist(reshape(J,1,[]), 64)
-figure, imshow(J); axis image;
 
-line([1, N], [box(2), box(2)], 'Color', 'r');
-line([1, N], [box(4), box(4)], 'Color', 'r');
+close all;
+figure, subplot(2,2,1);
+imshow(Ie); axis image; title('Original image with noise');
 
-line([box(1), box(1)], [1, N], 'Color', 'b');
-line([box(3), box(3)], [1, N], 'Color', 'b');
+subplot(2,2,2);
+imshow(J); axis image; title('Energy map');
+
+subplot(2,2,3);
+imshow(Ie); axis image; title('Intensity-based crop');
+line([1, N], [boxI(2), boxI(2)], 'Color', 'r');
+line([1, N], [boxI(4), boxI(4)], 'Color', 'r');
+line([boxI(1), boxI(1)], [1, N], 'Color', 'r');
+line([boxI(3), boxI(3)], [1, N], 'Color', 'r');
+
+subplot(2,2,4);
+imshow(Ie); axis image; title('Energy-based crop');
+line([1, N], [boxJ(2), boxJ(2)], 'Color', 'r');
+line([1, N], [boxJ(4), boxJ(4)], 'Color', 'r');
+line([boxJ(1), boxJ(1)], [1, N], 'Color', 'r');
+line([boxJ(3), boxJ(3)], [1, N], 'Color', 'r');
