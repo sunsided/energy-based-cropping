@@ -1,9 +1,10 @@
 close all;
 
-N = 256;                    % border length
-I = ones(N, N);             % white background
+M = 256;                    % border length
+N = M;
+I = ones(M, N);             % white background
 %I = cumsum(ones(N)/N, 2);
-%I = toeplitz(1:N)/N;
+I = toeplitz(1:N)/N;
 I(32:224, 32:224) = 0.9375; % light gray box
 I(64:192, 32:224) = 0.875;  % light gray box
 I(64:192, 32:224) = 0.875;  % light gray box
@@ -19,7 +20,7 @@ Ie(Ie<0) = 0;
 Gx = conv2(Ie, 0.125*[-1 0 1; -2 0 2; -1 0 1]);
 Gy = conv2(Ie, 0.125*[-1 -2 -1; 0 0 0; 1 2 1]);
 J = abs(Gx) + abs(Gy);
-J = J(1+2:N, 1+2:N);
+J = J(1+2:M, 1+2:N);
 
 % using the same technique as below for
 % mean and threshold (e.g. standard deviation)
@@ -56,13 +57,13 @@ imshow(Ie); axis image; title('Intensity-based crop');
 xlabel(sprintf('\\mu = %0.3f, \\tau = %0.3f', vI, tI));
 line([1, N], [boxI(2), boxI(2)], 'Color', 'r');
 line([1, N], [boxI(4), boxI(4)], 'Color', 'r');
-line([boxI(1), boxI(1)], [1, N], 'Color', 'r');
-line([boxI(3), boxI(3)], [1, N], 'Color', 'r');
+line([boxI(1), boxI(1)], [1, M], 'Color', 'r');
+line([boxI(3), boxI(3)], [1, M], 'Color', 'r');
 
 subplot(2,2,4);
 imshow(Ie); axis image; title('Energy-based crop');
 xlabel(sprintf('\\tau = %0.3f', tJ));
 line([1, N], [boxJ(2), boxJ(2)], 'Color', 'r');
 line([1, N], [boxJ(4), boxJ(4)], 'Color', 'r');
-line([boxJ(1), boxJ(1)], [1, N], 'Color', 'r');
-line([boxJ(3), boxJ(3)], [1, N], 'Color', 'r');
+line([boxJ(1), boxJ(1)], [1, M], 'Color', 'r');
+line([boxJ(3), boxJ(3)], [1, M], 'Color', 'r');

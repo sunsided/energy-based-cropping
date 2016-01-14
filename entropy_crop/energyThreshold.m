@@ -10,9 +10,9 @@ function [ t, m, s ] = energyThreshold( J, subdivision )
     width    = floor(N/subdivision);
     
     J_top    = J(1:height,:);
-    J_bottom = J(N-height:N,:);
-    J_left   = J(height:N-height-1, 1:width);
-    J_right  = J(height:N-height-1, M-width-1:M);
+    J_bottom = J(M-height:M,:);
+    J_left   = J(height:M-height-1, 1:width);
+    J_right  = J(height:M-height-1, N-width-1:N);
 
     border_energies = [ reshape(J_top,1,[]), ...
                         reshape(J_bottom,1,[]), ...
