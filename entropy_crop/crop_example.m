@@ -17,6 +17,11 @@ Ie = abs(I + E);            % apply the noise to the image
 Ie(Ie>1) = 1;
 Ie(Ie<0) = 0;
 
+%filename = '../../resources/images/source/7A5F52750ADD07483305B0C2226A484ED74B42FD4D87B4BBBC352DCF4E8D8BB8.jpg';
+%I = double(rgb2gray(imread(filename)))/255;
+%Ie = I;
+%[M, N] = size(I);
+
 Gx = conv2(Ie, 0.125*[-1 0 1; -2 0 2; -1 0 1]);
 Gy = conv2(Ie, 0.125*[-1 -2 -1; 0 0 0; 1 2 1]);
 J = abs(Gx) + abs(Gy);
