@@ -22,6 +22,12 @@ function [ box ] = findBoundingBox( I, threshold, level, offset )
         end
     end
     
+    if isnan(y_top)
+        % in this case, the whole image was croppped
+        box = [ 1, 1, M, N ];
+        return;
+    end
+    
     % find bottom-most row
     y_bottom = NaN;
     for y=bottom:-1:y_top
