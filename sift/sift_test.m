@@ -33,13 +33,33 @@ I = conv2(I, h, 'same');
 
 figure, imshow(I)
 
-sigma = sigma_0;
+sigma = sigma_0
 for s=1:N_scales
+    % Convolving the original image with sigma, k*sigma, k^2*sigma, ...
+    % results in extremely large Gaussian kernels.
+    % Instead, the following relation is used:
+    %
+    % G(sigma_f) conv G(sigma_g) = G(sqrt(sigma_f^2 + sigma_g^2))
+    %
+    % -> http://www.tina-vision.net/docs/memos/2003-003.pdf
+    % 
+    % Since:
+    %   sigma_{s+1}       := k^(s) * sigma_{s}
+    %   k^{s-1} * sigma_0 := k^(s) * sigma_{s}
+    %{
     sigma = (k^(s-1))*sigma;
     kernel_width = 1 + 2*floor(0.5* (3*sigma) );
     h = fspecial('gaussian', kernel_width, sigma);
     
     Is = conv2(I, h, 'same');
+    imshow(Is)
+    %}
+    
+    kernel_width = 1 + 2*floor(0.5* (3*sigma) );
+    h = fspecial('gaussian', kernel_width, sigma);
+    sigma = sigma_0 * k^s * sqrt(k^2-1)
+    
+    Is = conv2(Is, h, 'same');
     imshow(Is)
 end
 
