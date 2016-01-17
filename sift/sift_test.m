@@ -1,5 +1,7 @@
+close all; clear all; clc;
+
 %filename = '../../resources/images/source/7A5F52750ADD07483305B0C2226A484ED74B42FD4D87B4BBBC352DCF4E8D8BB8.jpg';
-filename = '../../resources/images/source/0A681D9ADB6193D1217E62A3A0E998EBE8E5C446B5D44CB5DBAC998B5B32B6DA.jpg';
+filename = '../../resources/images/test-images/lena.png';
 
 I = double( imread(filename) )./255;    % load image and normalize to 0..1
 I = sum( I.^(1/2.2), 3)/3;              % grayscale conversion by gleam
@@ -8,60 +10,81 @@ I = imresize(I, 0.5, 'bilinear');       % downsample image for speed
 minI = min(min(I)); maxI = max(max(I));
 I = (I-minI)/(maxI-minI);               % stretch the histogram
 
-imshow(I)
-
 % Scale-space extrema detection
-N_octaves = 4;
-N_scales  = 5;
-sigma_0   = 1.6;
-k         = sqrt(2);
-
-% "Pixels more distant from the center of the operator have 
-% smaller influence, and pixels farther than 3 sigma from the center
-% have negligible influence." 
-% Image Processing, Analysis and Machine Vision, 3rd. edition, p. 176
+s       = 2;                            % the number of wanted scales
+O       = 3;                            % the number of octaves
+S       = s+3;                          % then umber of required scales
+sigma_0 = sqrt(2)/2;%1.6;                          % first-scale gamma
+sigma_n = 0;%0.5;                          % intrinsic gamma
+k       = 2^(1/s); % for N_scales=5 --> s=2 --> sqrt(2);
 
 % pre-process according to the paper
-%{
 I = imresize(I, 2, 'nearest');          % preprocessing: upsample
-scale = 0.5;
-sigma = 1.5;
-kernel_width = 1 + 2*floor(0.5* (3*sigma) );
-h = fspecial('gaussian', kernel_width, sigma);
-I = conv2(I, h, 'same');
-%}
 
-figure, imshow(I)
+% repeat image edges to aid the convolution kernel at the image edges
+I = padarray(I, 0.5*size(I), 'replicate');
 
-sigma = sigma_0
-for s=1:N_scales
-    % Convolving the original image with sigma, k*sigma, k^2*sigma, ...
-    % results in extremely large Gaussian kernels.
-    % Instead, the following relation is used:
-    %
-    % G(sigma_f) conv G(sigma_g) = G(sqrt(sigma_f^2 + sigma_g^2))
-    %
-    % -> http://www.tina-vision.net/docs/memos/2003-003.pdf
-    % 
-    % Since:
-    %   sigma_{s+1}       := k^(s) * sigma_{s}
-    %   k^{s-1} * sigma_0 := k^(s) * sigma_{s}
-    %{
-    sigma = (k^(s-1))*sigma;
-    kernel_width = 1 + 2*floor(0.5* (3*sigma) );
-    h = fspecial('gaussian', kernel_width, sigma);
+sigma = 1.0;
+kernel_width = 1 + 2*floor(3*sigma);
+h = fspecial('gaussian', [1 kernel_width], sigma);
+I = conv2(h, h, I, 'same');
+
+% prepare the scales
+Ls = cell(O * S, 1);
+
+k_offset = 0;
+for o=0:O
+    if o>0
+        k_offset = o*(S-2);          % selects the sigma to double
+        I = Ls{o*S-2};               % select image with half sigma
+        I = imresize(I, 0.5, 'nearest');  % downsample by 2
+    end
     
-    Is = conv2(I, h, 'same');
-    imshow(Is)
-    %}
-    
-    kernel_width = 1 + 2*floor(0.5* (3*sigma) );
-    h = fspecial('gaussian', kernel_width, sigma);
-    sigma = sigma_0 * k^s * sqrt(k^2-1)
-    
-    Is = conv2(Is, h, 'same');
-    imshow(Is)
+    for s=(o*S):(o*S)+(S-1)
+        I_previous = I;
+        if s>(o*S)
+            I_previous = Ls{s};
+        end
+
+        % obtain iterative sigma
+        sigma        = k^(s-k_offset) * sigma_0 * sqrt( k^2-1 );
+        sigma_opt    = sqrt( sigma^2 - sigma_n^2 )
+
+        % create a separable kernel
+        kernel_width = 1 + 2*floor(3*sigma_opt);
+        h = fspecial('gaussian', [1 kernel_width], sigma_opt);
+
+        % build the scale
+        Ls{s+1} = conv2(h, h, I_previous, 'same');
+    end
 end
 
-figure, imshow(Is)
+% unpad
+for i=1:numel(Ls)
+    I = Ls{i};  
+    [M, N] = size(I);
+    Ls{i} = I(0.25*M:0.75*M-1, 0.25*N:0.75*N-1);
+end
 
+% build Difference-of-Gaussian
+DoG = cell(O * (S-1) - 2, 1);
+for o=0:O-1
+    
+    imwrite(Ls{o*S+1}, sprintf('sift-scales/l-octave-%d-scale-%d.png', o, 1));
+    for s=2:S
+        DoG{o*(S-1)+s-1} = Ls{o*S+s} - Ls{o*S+s-1};
+        
+        imwrite(Ls{o*S+s}, sprintf('sift-scales/l-octave-%d-scale-%d.png', o, s));
+        dog = (DoG{o*(S-1)+s-1}-min(min(DoG{o*(S-1)+s-1}))) / (max(max(DoG{o*(S-1)+s-1})) - min(min(DoG{o*(S-1)+s-1})));
+        imwrite(dog, sprintf('sift-scales/dog-octave-%d-scale-%d,%d.png', o, s,s-1));
+    end
+end
+
+for i=1:numel(Ls)
+    figure, imshow(Ls{i})
+end
+
+for i=1:numel(DoG)
+    dog = (DoG{i}-min(min(DoG{i}))) / (max(max(DoG{i})) - min(min(DoG{i})));
+    figure, imshow(dog)
+end
