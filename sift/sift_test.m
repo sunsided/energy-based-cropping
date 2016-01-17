@@ -20,6 +20,7 @@ k       = 2^(1/s); % for N_scales=5 --> s=2 --> sqrt(2);
 
 % pre-process according to the paper
 I = imresize(I, 2, 'nearest');          % preprocessing: upsample
+O = O+1;
 
 % repeat image edges to aid the convolution kernel at the image edges
 I = padarray(I, 0.5*size(I), 'replicate');
