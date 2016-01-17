@@ -72,13 +72,13 @@ end
 DoG = cell(O * (S-1) - 2, 1);
 for o=0:O-1
     
-    imwrite(Ls{o*S+1}, sprintf('sift-scales/l-octave-%d-scale-%d.png', o, 1));
+    %imwrite(Ls{o*S+1}, sprintf('sift-scales/l-octave-%d-scale-%d.png', o, 1));
     for s=2:S
         DoG{o*(S-1)+s-1} = Ls{o*S+s} - Ls{o*S+s-1};
         
-        imwrite(Ls{o*S+s}, sprintf('sift-scales/l-octave-%d-scale-%d.png', o, s));
-        dog = (DoG{o*(S-1)+s-1}-min(min(DoG{o*(S-1)+s-1}))) / (max(max(DoG{o*(S-1)+s-1})) - min(min(DoG{o*(S-1)+s-1})));
-        imwrite(dog, sprintf('sift-scales/dog-octave-%d-scale-%d,%d.png', o, s,s-1));
+        %imwrite(Ls{o*S+s}, sprintf('sift-scales/l-octave-%d-scale-%d.png', o, s));
+        %dog = (DoG{o*(S-1)+s-1}-min(min(DoG{o*(S-1)+s-1}))) / (max(max(DoG{o*(S-1)+s-1})) - min(min(DoG{o*(S-1)+s-1})));
+        %imwrite(dog, sprintf('sift-scales/dog-octave-%d-scale-%d,%d.png', o, s,s-1));
     end
 end
 
