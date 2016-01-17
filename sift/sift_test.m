@@ -1,7 +1,8 @@
 close all; clear all; clc;
 
 %filename = '../../resources/images/source/7A5F52750ADD07483305B0C2226A484ED74B42FD4D87B4BBBC352DCF4E8D8BB8.jpg';
-filename = '../../resources/images/test-images/lena.png';
+%filename = '../../resources/images/test-images/lena.png';
+filename = '../../resources/images/test-images/troete-sw.jpg';
 
 I = double( imread(filename) )./255;    % load image and normalize to 0..1
 I = sum( I.^(1/2.2), 3)/3;              % grayscale conversion by gleam
