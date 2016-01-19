@@ -19,8 +19,9 @@ derp(1,0-1*n_spo),  derp(1,1-1*n_spo)
 derp(2,0-2*n_spo),  derp(2,1-2*n_spo)
 
 apply_to_seed   = @(s) delta_min * sqrt( s^2 + (sigma_in/delta_min)^2 );
-apply_sigma_1   = @(o, s, s0) (delta_min*2^o)/delta_min*sigma_min * sqrt( s^2 +  s0^2 );
-apply_sigma_2   = @(o, s, s0)                                       sqrt( s^2 +  s0^2 );
+
+apply_sigma_0   = @(o, s, s0) (delta_min*2^o)/delta_min*sigma_min * sqrt( s^2 +  s0^2 );
+apply_sigma     = @(s, s0) sqrt( s^2 +  s0^2 );
 
 oct   = @(i) i+1;
 scale = @(i) i+1;
@@ -31,15 +32,26 @@ sigmas = nan( n_oct, 1+n_spo+2 );
 % octave 0
 sigmas(oct(0), scale(0)) = apply_to_seed( sqrt(sigma_min^2 - sigma_in^2) / delta_min );
 for s=1:n_spo+2
-    sigmas(oct(0), scale(s)) = apply_sigma_1(0, sigma(s-1), sigmas(oct(0), scale(s-1)) );
+    %sigmas(oct(0), scale(s)) = apply_sigma_0(0, sigma(s-1), sigmas(oct(0), scale(s-1)) );
+    sigmas(oct(0), scale(s)) = apply_sigma( sigma(s-3), sigmas(oct(0), scale(s-1)) );
 end
 
-% octave 1...n_oct
-for o=1:n_oct
-    sigmas(oct(o), scale(0))     = sigmas(oct(o-1), scale(n_spo));
-    for s=1:n_spo+2
-        sigmas(oct(o), scale(s)) = apply_sigma_2(o, sigma(s), sigmas(oct(o), scale(s-1)) );
-    end
+% octave 1
+sigmas(oct(1), scale(0))     = sigmas(oct(0), scale(n_spo));
+for s=1:n_spo+2
+    sigmas(oct(1), scale(s)) = apply_sigma( sigma(s), sigmas(oct(1), scale(s-1)) );
 end
 
-sigmas
+% octave 2
+sigmas(oct(2), scale(0))     = sigmas(oct(1), scale(n_spo));
+for s=1:n_spo+2
+    sigmas(oct(2), scale(s)) = apply_sigma( sigma(s+3), sigmas(oct(2), scale(s-1)) );
+end
+
+% octave 3
+sigmas(oct(3), scale(0))     = sigmas(oct(2), scale(n_spo));
+for s=1:n_spo+2
+    sigmas(oct(3), scale(s)) = apply_sigma( sigma(s+6), sigmas(oct(3), scale(s-1)) );
+end
+
+sigmas = round(sigmas*1E2)*1E-2
