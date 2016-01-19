@@ -54,4 +54,5 @@ for s=1:n_spo+2
     sigmas(oct(3), scale(s)) = apply_sigma( sigma(s+6), sigmas(oct(3), scale(s-1)) );
 end
 
-sigmas = round(sigmas*1E2)*1E-2
+%sigmas = round(sigmas*1E2)*1E-2
+sigmas
