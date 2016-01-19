@@ -33,7 +33,8 @@ sigmas = nan( n_oct, 1+n_spo+2 );
 sigmas(oct(0), scale(0)) = apply_to_seed( sqrt(sigma_min^2 - sigma_in^2) / delta_min );
 for s=1:n_spo+2
     %sigmas(oct(0), scale(s)) = apply_sigma_0(0, sigma(s-1), sigmas(oct(0), scale(s-1)) );
-    sigmas(oct(0), scale(s)) = apply_sigma( sigma(s-3), sigmas(oct(0), scale(s-1)) );
+    %sigmas(oct(0), scale(s)) = apply_sigma( sigma(s-3), sigmas(oct(0), scale(s-1)) );
+    sigmas(oct(0), scale(s)) = apply_sigma( 0.5*sigma(s), sigmas(oct(0), scale(s-1)) );
 end
 
 % octave 1
@@ -45,13 +46,15 @@ end
 % octave 2
 sigmas(oct(2), scale(0))     = sigmas(oct(1), scale(n_spo));
 for s=1:n_spo+2
-    sigmas(oct(2), scale(s)) = apply_sigma( sigma(s+3), sigmas(oct(2), scale(s-1)) );
+    %sigmas(oct(2), scale(s)) = apply_sigma( sigma(s+3), sigmas(oct(2), scale(s-1)) );
+    sigmas(oct(2), scale(s)) = apply_sigma( 2*sigma(s), sigmas(oct(2), scale(s-1)) );
 end
 
 % octave 3
 sigmas(oct(3), scale(0))     = sigmas(oct(2), scale(n_spo));
 for s=1:n_spo+2
-    sigmas(oct(3), scale(s)) = apply_sigma( sigma(s+6), sigmas(oct(3), scale(s-1)) );
+    %sigmas(oct(3), scale(s)) = apply_sigma( sigma(s+6), sigmas(oct(3), scale(s-1)) );
+    sigmas(oct(3), scale(s)) = apply_sigma( 4*sigma(s), sigmas(oct(3), scale(s-1)) );
 end
 
 %sigmas = round(sigmas*1E2)*1E-2
