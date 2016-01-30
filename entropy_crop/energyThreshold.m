@@ -1,4 +1,4 @@
-function [ t, m, s ] = energyThreshold( J, subdivision )
+function [ t, m, s, border_energies ] = energyThreshold( J, subdivision )
 %ENERGYTHRESHOLD Obtains the threshold for energy-based cropping
 
     if ~exist('subdivision', 'var')
@@ -18,7 +18,6 @@ function [ t, m, s ] = energyThreshold( J, subdivision )
                         reshape(J_bottom,1,[]), ...
                         reshape(J_left,1,[]), ...
                         reshape(J_right,1,[]) ];
-    figure, hist(border_energies, 64)
 
     m = median(border_energies);
     s = std(border_energies);

@@ -4,7 +4,7 @@ M = 256;                    % border length
 N = M;
 I = ones(M, N);             % white background
 %I = cumsum(ones(N)/N, 2);
-I = toeplitz(1:N)/N;
+%I = toeplitz(1:N)/N;
 I(32:224, 32:224) = 0.9375; % light gray box
 I(64:192, 32:224) = 0.875;  % light gray box
 I(64:192, 32:224) = 0.875;  % light gray box
@@ -18,6 +18,7 @@ Ie(Ie>1) = 1;
 Ie(Ie<0) = 0;
 
 %filename = '../../resources/images/source/7A5F52750ADD07483305B0C2226A484ED74B42FD4D87B4BBBC352DCF4E8D8BB8.jpg';
+%filename = '../../resources/images/source/0A681D9ADB6193D1217E62A3A0E998EBE8E5C446B5D44CB5DBAC998B5B32B6DA.jpg';
 %I = double(rgb2gray(imread(filename)))/255;
 %Ie = I;
 %[M, N] = size(I);
@@ -43,7 +44,7 @@ J = J(1+2:M, 1+2:N);
 [~,vI,tI] = energyThreshold(Ie, 6);
 boxI = findBoundingBox(Ie, sqrt(tI), vI, 0)
 
-J = (J-min(min(J)))/(max(max(J))-min(min(J)));
+J = (J-min(J(:)))/(max(J(:))-min(J(:)));
 tJ = energyThreshold(J);    % threshold value
 vJ = 0;                     % candidate value
 boxJ = findBoundingBox(J, tJ, vJ, 0)
@@ -72,3 +73,6 @@ line([1, N], [boxJ(2), boxJ(2)], 'Color', 'r');
 line([1, N], [boxJ(4), boxJ(4)], 'Color', 'r');
 line([boxJ(1), boxJ(1)], [1, M], 'Color', 'r');
 line([boxJ(3), boxJ(3)], [1, M], 'Color', 'r');
+
+%imwrite(Ie, 'input.png');
+%imwrite(J, 'energy.png');

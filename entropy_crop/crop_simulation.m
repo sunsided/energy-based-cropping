@@ -30,10 +30,16 @@ for i=1:N_meas
     J = abs(Gx) + abs(Gy);
     J = J(1+2:N, 1+2:N);
 
-    vI = Ie(1,1);               % candidate value
-    boxI = findBoundingBox(Ie, tI, vI, 0);
+    %vI = Ie(1,1);               % candidate value
+    %boxI = findBoundingBox(Ie, tI, vI, 0);
+    
+    [t,vI,tI] = energyThreshold(Ie, 6);
+    boxI = findBoundingBox(Ie, sqrt(tI), vI, 0);
 
-    J = (J-min(min(J)))/(max(max(J))-min(min(J)));
+    J = (J-min(J(:)))/(max(J(:))-min(J(:)));
+%    vJ = 0;                     % candidate value
+
+    tJ = energyThreshold(J);    % threshold value
     vJ = 0;                     % candidate value
     boxJ = findBoundingBox(J, tJ, vJ, 0);
 
