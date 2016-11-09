@@ -17,8 +17,8 @@ Ie = abs(I + E);            % apply the noise to the image
 Ie(Ie>1) = 1;
 Ie(Ie<0) = 0;
 
-%filename = '../../resources/images/source/7A5F52750ADD07483305B0C2226A484ED74B42FD4D87B4BBBC352DCF4E8D8BB8.jpg';
-%filename = '../../resources/images/source/0A681D9ADB6193D1217E62A3A0E998EBE8E5C446B5D44CB5DBAC998B5B32B6DA.jpg';
+%filename = '../resources/images/source/7A5F52750ADD07483305B0C2226A484ED74B42FD4D87B4BBBC352DCF4E8D8BB8.jpg';
+%filename = '../resources/images/source/0A681D9ADB6193D1217E62A3A0E998EBE8E5C446B5D44CB5DBAC998B5B32B6DA.jpg';
 %I = double(rgb2gray(imread(filename)))/255;
 %Ie = I;
 %[M, N] = size(I);

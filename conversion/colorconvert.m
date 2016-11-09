@@ -1,6 +1,6 @@
 close all;
 
-filename = '../../../resources/images/random/20130821-122721-_DSC4684.jpg';
+filename = '../resources/images/random/20130821-122721-_DSC4684.jpg';
 
 gamma = 2.2;
 R = img(:,:,1);

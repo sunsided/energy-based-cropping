@@ -1,10 +1,10 @@
 close all;
 
-%filename = '../../resources/images/source/7A5F52750ADD07483305B0C2226A484ED74B42FD4D87B4BBBC352DCF4E8D8BB8.jpg';
-filename = '../../resources/images/source/6A6E132456CE9AA651058B1608B77052B4B5E10F58EDD38ABE14B0CD46891A1D.png';
-%filename = '../../resources/images/source/6513053600A14B930EDD7E5CDBED92EBB724676DA3F0EFDF3FD3F564743E14B4.png';
-%filename = '../../resources/images/source/0A681D9ADB6193D1217E62A3A0E998EBE8E5C446B5D44CB5DBAC998B5B32B6DA.jpg';
-%filename = '../../resources/images/random/dino20riders.jpg';
+%filename = '../resources/images/source/7A5F52750ADD07483305B0C2226A484ED74B42FD4D87B4BBBC352DCF4E8D8BB8.jpg';
+filename = '../resources/images/source/6A6E132456CE9AA651058B1608B77052B4B5E10F58EDD38ABE14B0CD46891A1D.png';
+%filename = '../resources/images/source/6513053600A14B930EDD7E5CDBED92EBB724676DA3F0EFDF3FD3F564743E14B4.png';
+%filename = '../resources/images/source/0A681D9ADB6193D1217E62A3A0E998EBE8E5C446B5D44CB5DBAC998B5B32B6DA.jpg';
+%filename = '../resources/images/random/dino20riders.jpg';
 
 img = imread(filename);
 
